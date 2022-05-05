@@ -2,8 +2,9 @@ package knox.sudoku;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.LinkedList;
+// import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.*;
 
 /**
  * 
@@ -32,12 +33,27 @@ public class Sudoku {
 	
 	public boolean isLegal(int row, int col, int val) {
 		// TODO: check if it's legal to put val at row, col
-		return true;
+		return getLegalValues(row, col).contains(val);
 	}
 	
 	public Collection<Integer> getLegalValues(int row, int col) {
 		// TODO: return only the legal values that can be stored at the given row, col
-		return new LinkedList<>();
+		// get all values that dont show up in same row as row, or same col as col, 
+		// or the same 3x3 area as where row, col is located
+		Set<Integer> result = new HashSet<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
+		for (int i=0; i<9; i++) {
+			result.remove(board[row][i]);
+			result.remove(board[i][col]);
+		}
+		//remove from the 3x3 grid
+		int rstart = row / 3 * 3;
+		int cstart = col / 3 * 3;
+		for (int r = rstart; r<rstart+3; r++) {
+			for (int c = cstart; c<cstart+3; c++) {
+				result.remove(board[r][c]);
+			}
+		}
+		return result;
 	}
 	
 /**
@@ -120,6 +136,17 @@ etc
 		}
 		return false;
 	}
+	
+	public boolean didIWin() {
+		if (!gameOver()) return false;
+		for (int r=0; r<9; r++) {
+			for (int c=0; c<9; c++) {
+				if (!isLegal(r, c, board[r][c])) return false;
+			}
+		}
+		return true;
+	}
+
 
 	public boolean isBlank(int row, int col) {
 		return board[row][col] == 0;

@@ -52,6 +52,9 @@ public class SudokuGUI extends JFrame {
     private int currentRow = -1;
     private int currentCol = -1;
 
+	//hintRow and hintCol
+	private int hintRow = -1;
+	private int hintCol = -1;
     
     // figuring out how big to make each button
     // honestly not sure how much detail is needed here with margins
@@ -94,7 +97,13 @@ public class SudokuGUI extends JFrame {
 				int digit = key - '0';
 				System.out.println(key);
 				if (currentRow == row && currentCol == col) {
-					sudoku.set(row, col, digit);
+					if (!sudoku.isLegal(row, col, digit)) {
+						//error
+						JOptionPane.showMessageDialog(null, String.format("%d cannot go in row %d and col %d", digit, row, col));
+					}
+					else {
+						sudoku.set(row, col, digit);
+					}
 				}
 				update();
 			}
@@ -115,6 +124,11 @@ public class SudokuGUI extends JFrame {
 			//System.out.printf("row %d, col %d, %s\n", row, col, e);
 			JButton button = (JButton)e.getSource();
 			
+			// turn off hints as soon as you click any grid square
+			// XXX was the piece we were missing 
+			hintRow = -1;
+			hintCol = -1;
+
 			if (row == currentRow && col == currentCol) {
 				currentRow = -1;
 				currentCol = -1;
@@ -156,7 +170,11 @@ public class SudokuGUI extends JFrame {
     private void update() {
     	for (int row=0; row<numRows; row++) {
     		for (int col=0; col<numCols; col++) {
-    			if (row == currentRow && col == currentCol && sudoku.isBlank(row, col)) {
+				if (hintRow == row && hintCol == col) {
+					buttons[row][col].setBackground(Color.pink);
+					setText(row, col, "");
+				}
+    			else if (row == currentRow && col == currentCol && sudoku.isBlank(row, col)) {
     				// draw this grid square special!
     				// this is the grid square we are trying to enter value into
     				buttons[row][col].setForeground(Color.RED);
@@ -239,6 +257,16 @@ public class SudokuGUI extends JFrame {
         addToMenu(help, "Hint", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				for (int r=0; r<9; r++) {
+					for (int c=0; c<9; c++) {
+						if (sudoku.isBlank(r,c) && sudoku.getLegalValues(r,c).size()==1) {
+							hintRow = r;
+							hintCol = c;
+							update();
+							return;
+						}
+					}
+				}
 				JOptionPane.showMessageDialog(null, "Give the user a hint! Highlight the most constrained square\n" + 
 						"which is the square where the fewest posssible values can go");
 			}
