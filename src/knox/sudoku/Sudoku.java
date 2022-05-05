@@ -161,4 +161,29 @@ etc
 		return board[row][col] == 0;
 	}
 
+
+	// Feature 1: print text to check win or not
+	public void winText() {
+		if (didIWin()) {
+			System.out.print("Congrats! You win!");
+		}
+		else if (gameOver()) {
+			System.out.print("Game Over!");
+		}
+		else {
+			System.out.print("Let's go!");
+		}
+	}
+
+	// Feature 2: print all blank positions so the player can navigate easier
+	public void printBlank() {
+		for (int r=0; r<9; r++) {
+			for (int c=0; c<9; c++) {
+				if (isBlank(r, c)) {
+					System.out.print("Blank position: " + board[r][c]);
+				}
+			}
+			System.out.print("/n");
+		}
+	}
 }
