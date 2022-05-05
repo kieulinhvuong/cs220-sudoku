@@ -113,6 +113,11 @@ etc
 
 	public boolean gameOver() {
 		// TODO check that there are still open spots
+		for (int[] row : board) {
+			for (int val : row) {
+				if (val == 0) return false;
+			}
+		}
 		return false;
 	}
 
