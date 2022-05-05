@@ -27,3 +27,5 @@ Load/Save games
 * Set up the load/save menu options so that they can load and save a game
 * To save a game, write the board to a text file. Use a `JFileChooser` to decide what file to write to
 * To load a game, use a `JFileChooser` to load a game from a text file
+
+2 new features are added in Sodoku.java file 
