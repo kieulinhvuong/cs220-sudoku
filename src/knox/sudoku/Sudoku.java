@@ -1,4 +1,5 @@
 package knox.sudoku;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -22,24 +23,18 @@ public class Sudoku {
 	int[][] board = new int[9][9];
 	
 	public int get(int row, int col) {
-		// TODO: check for out of bounds
 		return board[row][col];
 	}
 	
 	public void set(int row, int col, int val) {
-		// TODO: make sure val is legal
 		board[row][col] = val;
 	}
 	
 	public boolean isLegal(int row, int col, int val) {
-		// TODO: check if it's legal to put val at row, col
 		return getLegalValues(row, col).contains(val);
 	}
 	
 	public Collection<Integer> getLegalValues(int row, int col) {
-		// TODO: return only the legal values that can be stored at the given row, col
-		// get all values that dont show up in same row as row, or same col as col, 
-		// or the same 3x3 area as where row, col is located
 		Set<Integer> result = new HashSet<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
 		for (int i=0; i<9; i++) {
 			result.remove(board[row][i]);
@@ -66,9 +61,9 @@ etc
 0 0 0 3 0 4 0 8 9
 
  */
-	public void load(String filename) {
+	public void load(File file) {
 		try {
-			Scanner scan = new Scanner(new FileInputStream(filename));
+			Scanner scan = new Scanner(file);
 			// read the file
 			for (int r=0; r<9; r++) {
 				for (int c=0; c<9; c++) {
@@ -81,6 +76,9 @@ etc
 		}
 	}
 	
+	public void load(String filename) {
+		load(new File(filename));
+	}
 	/**
 	 * Return which 3x3 grid this row is contained in.
 	 * 
@@ -109,6 +107,18 @@ etc
 		}
 		return result;
 	}
+
+	public String toFileString() {
+		String result = "";
+		for (int r=0; r<9; r++) {
+			for (int c=0; c<9; c++) {
+				int val = get(r, c);
+				result += val + " ";
+			}
+			result += "\n";
+		}
+		return result;
+	}
 	
 	public static void main(String[] args) {
 		Sudoku sudoku = new Sudoku();
@@ -128,7 +138,6 @@ etc
 	}
 
 	public boolean gameOver() {
-		// TODO check that there are still open spots
 		for (int[] row : board) {
 			for (int val : row) {
 				if (val == 0) return false;
